@@ -23,7 +23,7 @@ form.addEventListener("submit", async (event)=> {
         const data = await response.json();
 
         //Save JWT
-        localStorage.setItem("access token", data.access_token);
+        localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("token_type", data.token_type);
 
         window.location.href="bookmark.html";
