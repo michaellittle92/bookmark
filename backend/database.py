@@ -33,7 +33,8 @@ def create_table():
         category_id INT,
         user_id INT NOT NULL,
         FOREIGN KEY (category_id)
-        REFERENCES categories(category_id),
+        REFERENCES categories(category_id)
+        ON DELETE SET NULL
         FOREIGN KEY (user_id)
         REFERENCES users(user_id)
         );
