@@ -1,6 +1,5 @@
 import secrets
 from pathlib import Path
-import os
 
 
 def check_env():
