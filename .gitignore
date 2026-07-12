@@ -1,0 +1,4 @@
+.env
+bookmark.db
+__pycache__
+.venv
