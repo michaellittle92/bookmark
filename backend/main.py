@@ -3,6 +3,7 @@ import config
 from dotenv import load_dotenv
 import bcrypt
 from schema import CategoryCreate, UserRegister, BookmarkCreate, CategoryUpdate
+from fastapi.middleware.cors import CORSMiddleware
 import database
 from fastapi import FastAPI, Depends, HTTPException, status
 import jwt
@@ -21,6 +22,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # CORS CONFIG
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # tighten this in production
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # JWT CONFIG - Move to .env
 
