@@ -32,6 +32,39 @@ async function getBookmarks(){
     }
 }
 
+async function getCategories(){
+    const token = localStorage.getItem("access_token")
+    const tokenType = localStorage.getItem("token_type") || "Bearer";
+
+    if (!token){
+        window.location.href = "index.html";
+        return
+    }
+    try{
+        const response = await fetch(`${API_BASE_URL}/user/get_all_categories`, {
+            method: "GET",
+            headers: {
+                Authorization: `${tokenType} ${token}`,
+            },
+        });
+        if (!response.ok){
+            if(response === 401){
+                localStorage.removeItem("access_token")
+                localStorage.removeItem("token_type");
+                window.location.href = "index.html";
+                return
+            }
+            throw new Error(`Request failed: ${response.status}`);
+        }
+        const categories = await response.json();
+        console.log(categories)
+    }
+    catch(err){
+        console.log(err.message)
+    }
+}
+
+
 function renderBookmarks(bookmarks){
     const container = document.querySelector("#bookmarks-container");
     container.innerHTML = "";
@@ -63,4 +96,5 @@ function renderBookmarks(bookmarks){
     });
 }
 
+getCategories();
 getBookmarks();
