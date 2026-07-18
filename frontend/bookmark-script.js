@@ -64,7 +64,6 @@ async function getCategories(){
     }
 }
 
-
 function renderBookmarks(bookmarks){
     const container = document.querySelector("#bookmarks-container");
     container.innerHTML = "";

@@ -2,7 +2,13 @@ import os
 import config
 from dotenv import load_dotenv
 import bcrypt
-from schema import CategoryCreate, UserRegister, BookmarkCreate, CategoryUpdate
+from schema import (
+    CategoryCreate,
+    UserRegister,
+    BookmarkCreate,
+    CategoryUpdate,
+    BookmarkUpdate,
+)
 from fastapi.middleware.cors import CORSMiddleware
 import database
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -152,11 +158,57 @@ def create_bookmark(
         ),
     )
     db.commit()
-    return {"message": f"Bookmark{bookmark.bookmark_title} created succesfully"}
+    return {"message": f"Bookmark {bookmark.bookmark_title} created succesfully"}
 
 
 # user/Update bookmark
+@app.put("/users/update_bookmark/{bookmark_id}")
+def update_bookmark(
+    bookmark_id: int,
+    bookmark: BookmarkUpdate,
+    current_user=Depends(get_current_user),
+    db=Depends(database.get_db),
+):
+    cursor = db.cursor()
+    cursor.execute(
+        "UPDATE bookmarks SET bookmark_title = ?, bookmark_url = ?, category_id = ? WHERE bookmark_id = ? AND user_id = ?",
+        (
+            bookmark.bookmark_title,
+            bookmark.bookmark_url,
+            bookmark.category_id,
+            bookmark_id,
+            current_user["user_id"],
+        ),
+    )
+    db.commit()
+    if cursor.rowcount == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bookmark not found",
+        )
+
+    return {"message": f"Bookmark {bookmark_id} updated successfully"}
+
+
 # user/Delete Bookmark
+@app.delete("/user/delete_bookmark/{bookmark_id}")
+def delete_bookmark(
+    bookmark_id: int,
+    current_user=Depends(get_current_user),
+    db=Depends(database.get_db),
+):
+    cursor = db.cursor()
+    cursor.execute(
+        "DELETE FROM bookmarks WHERE bookmark_id = ? AND user_id = ?",
+        (bookmark_id, current_user["user_id"]),
+    )
+    db.commit()
+    if cursor.rowcount == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bookmark not found",
+        )
+    return {"message": f"Bookmark {bookmark_id} deleted successfully"}
 
 
 # user/get all categories

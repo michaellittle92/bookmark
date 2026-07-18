@@ -22,6 +22,12 @@ class CategoryUpdate(BaseModel):
 
 
 # bookmark
+class BookmarkUpdate(BaseModel):
+    bookmark_title: str = Field(..., min_length=1, max_length=50)
+    bookmark_url: str = Field(..., min_length=10, max_length=200)
+    category_id: int
+
+
 class BookmarkCreate(BaseModel):
     bookmark_title: str = Field(..., min_length=1, max_length=50)
     bookmark_url: str = Field(..., min_length=10, max_length=200)
