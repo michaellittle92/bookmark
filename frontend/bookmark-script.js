@@ -1,5 +1,7 @@
 import {API_BASE_URL} from "./config.js";
 
+let categoriesCache = [];
+
 async function getBookmarks(){
     const token = localStorage.getItem("access_token");
     const tokenType = localStorage.getItem("token_type") || "Bearer";
@@ -48,20 +50,69 @@ async function getCategories(){
             },
         });
         if (!response.ok){
-            if(response === 401){
+            if(response.status === 401){
                 localStorage.removeItem("access_token")
                 localStorage.removeItem("token_type");
                 window.location.href = "index.html";
-                return
+                return []
             }
             throw new Error(`Request failed: ${response.status}`);
         }
         const categories = await response.json();
-        console.log(categories)
+        categoriesCache = categories;
+        return categories
     }
     catch(err){
         console.log(err.message)
+        return []
     }
+}
+
+async function updateBookmarkCategory(bookmark, newCategoryId){
+    const token = localStorage.getItem("access_token");
+    const tokenType = localStorage.getItem("token_type") || "Bearer";
+
+    try{
+        const response = await fetch(`${API_BASE_URL}/user/update_bookmark/${bookmark.bookmark_id}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `${tokenType} ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                bookmark_title: bookmark.bookmark_title,
+                bookmark_url: bookmark.bookmark_url,
+                category_id: newCategoryId,
+            }),
+        });
+
+        if (!response.ok){
+            throw new Error(`Request failed: ${response.status}`);
+        }
+    }catch(err){
+        console.log(err.message);
+    }
+} 
+
+function createCategoryDropdown(bookmark){   // <-- now top-level, module scope
+    const select = document.createElement("select");
+    select.classList.add("bookmark-category-select");
+
+    categoriesCache.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category.category_id;
+        option.textContent = category.category_name;
+        if (category.category_id === bookmark.category_id){
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+
+    select.addEventListener("change", (e) => {
+        updateBookmarkCategory(bookmark, e.target.value);
+    });
+
+    return select;
 }
 
 function renderBookmarks(bookmarks){
@@ -75,7 +126,7 @@ function renderBookmarks(bookmarks){
 
     bookmarks.forEach((bookmark) => {
         const row = document.createElement("div");
-        //row.classList.add("bookmark-row")
+        row.classList.add("bookmark-row")
 
         const title = document.createElement("span");
         title.classList.add("bookmark-title")
@@ -88,12 +139,20 @@ function renderBookmarks(bookmarks){
         link.target = "_blank";
         link.rel = "noopener noreferrer"
 
+        const categorySelect = createCategoryDropdown(bookmark)
+
         row.appendChild(title);
         row.appendChild(link)
-        container.appendChild(row);
+        row.appendChild(categorySelect)   // <-- added, this was missing
 
+        container.appendChild(row);
     });
+
+}
+async function init(){
+await getCategories();
+await getBookmarks();
 }
 
-getCategories();
-getBookmarks();
+init();
+

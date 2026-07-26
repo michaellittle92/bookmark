@@ -162,7 +162,7 @@ def create_bookmark(
 
 
 # user/Update bookmark
-@app.put("/users/update_bookmark/{bookmark_id}")
+@app.put("/user/update_bookmark/{bookmark_id}")
 def update_bookmark(
     bookmark_id: int,
     bookmark: BookmarkUpdate,
