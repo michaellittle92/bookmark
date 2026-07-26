@@ -3,3 +3,11 @@ bookmark.db
 __pycache__
 .venv
 .DS_Store
+backend/.idea/backend.iml
+.gitignore
+.gitignore
+backend/.idea/vcs.xml
+.gitignore
+backend/.idea/inspectionProfiles/profiles_settings.xml
+.gitignore
+backend/.idea/modules.xml
