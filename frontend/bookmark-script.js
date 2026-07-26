@@ -94,9 +94,17 @@ async function updateBookmarkCategory(bookmark, newCategoryId){
     }
 } 
 
-function createCategoryDropdown(bookmark){   // <-- now top-level, module scope
+function createCategoryDropdown(bookmark){
     const select = document.createElement("select");
     select.classList.add("bookmark-category-select");
+
+    const noneOption = document.createElement("option");
+    noneOption.value = "";
+    noneOption.textContent = "Uncategorized";
+    if (bookmark.category_id === null){
+        noneOption.selected = true;
+    }
+    select.appendChild(noneOption);
 
     categoriesCache.forEach((category) => {
         const option = document.createElement("option");
@@ -109,7 +117,8 @@ function createCategoryDropdown(bookmark){   // <-- now top-level, module scope
     });
 
     select.addEventListener("change", (e) => {
-        updateBookmarkCategory(bookmark, e.target.value);
+        const newCategoryId = e.target.value === "" ? null : Number(e.target.value);
+        updateBookmarkCategory(bookmark, newCategoryId);
     });
 
     return select;
@@ -149,9 +158,76 @@ function renderBookmarks(bookmarks){
     });
 
 }
+async function createBookmark(bookmarkTitle, bookmarkUrl, categoryId){
+    const token = localStorage.getItem("access_token");
+    const tokenType = localStorage.getItem("token_type") || "Bearer";
+
+    try{
+        const response = await fetch(`${API_BASE_URL}/user/create_bookmark`, {
+            method: "POST",
+            headers: {
+                Authorization: `${tokenType} ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                bookmark_title: bookmarkTitle,
+                bookmark_url: bookmarkUrl,
+                category_id: categoryId,
+            }),
+        });
+
+        if (!response.ok){
+            throw new Error(`Request failed: ${response.status}`);
+        }
+
+        await getBookmarks(); // refresh list since the endpoint doesn't return the new bookmark
+    }catch(err){
+        console.log(err.message);
+    }
+}
+
+function populateCategorySelect(selectEl){
+    selectEl.innerHTML = "";
+
+    const noneOption = document.createElement("option");
+    noneOption.value = "";
+    noneOption.textContent = "Uncategorized";
+    selectEl.appendChild(noneOption)
+
+    categoriesCache.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category.category_id;
+        option.textContent = category.category_name;
+        selectEl.appendChild(option);
+    });
+}
+
+function initCreateBookmarkForm(){
+    const form = document.querySelector("#create-bookmark-form");
+    if (!form) return;
+
+    const categorySelect = document.querySelector("#new-bookmark-category");
+    populateCategorySelect(categorySelect);
+
+    form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const title = document.querySelector("#new-bookmark-title").value.trim();
+    const url = document.querySelector("#new-bookmark-url").value.trim();
+    const categoryValue = categorySelect.value;
+    const categoryId = categoryValue === "" ? null : Number(categoryValue);
+
+    if (!title || !url) return;
+
+    createBookmark(title, url, categoryId);
+    form.reset();
+});
+}
+
 async function init(){
 await getCategories();
 await getBookmarks();
+initCreateBookmarkForm();
 }
 
 init();

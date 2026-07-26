@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 # login
@@ -31,4 +32,4 @@ class BookmarkUpdate(BaseModel):
 class BookmarkCreate(BaseModel):
     bookmark_title: str = Field(..., min_length=1, max_length=50)
     bookmark_url: str = Field(..., min_length=10, max_length=200)
-    category_id: int
+    category_id: Optional[int] = None
