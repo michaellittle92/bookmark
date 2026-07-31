@@ -5,15 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookmark</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Bookmark</h1>
+    <nav class="navbar">
+        <h1>Bookmark</h1>
+        <div class="nav-links">
+            <a href="bookmark.html" class="active">Bookmarks</a>
+            <a href="categories.html">Categories</a>
+        </div>
+        <button id="signout-btn">Sign Out</button>
+    </nav>
     <form id="create-bookmark-form">
         <input id="new-bookmark-title" type="text" placeholder="Title" required>
         <input id="new-bookmark-url" type="url" placeholder="URL" required>
         <select id="new-bookmark-category"></select>
         <button type="submit">Add Bookmark</button>
+        <a id="manage-categories-link" href="categories.html">Add Category</a>
     </form>
     <div id="bookmarks-container">
 

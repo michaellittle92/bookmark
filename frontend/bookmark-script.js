@@ -133,29 +133,37 @@ function renderBookmarks(bookmarks){
         return
     }
 
-    bookmarks.forEach((bookmark) => {
-        const row = document.createElement("div");
-        row.classList.add("bookmark-row")
+bookmarks.forEach((bookmark) => {
+    const row = document.createElement("div");
+    row.classList.add("bookmark-row")
 
-        const title = document.createElement("span");
-        title.classList.add("bookmark-title")
-        title.textContent = bookmark.bookmark_title;
+    const title = document.createElement("span");
+    title.classList.add("bookmark-title")
+    title.textContent = bookmark.bookmark_title;
 
-        const link = document.createElement("a");
-        link.classList.add("bookmark_url");
-        link.href = bookmark.bookmark_url;
-        link.textContent = bookmark.bookmark_title;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer"
+    const link = document.createElement("a");
+    link.classList.add("bookmark_url");
+    link.href = bookmark.bookmark_url;
+    link.textContent = bookmark.bookmark_title;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer"
 
-        const categorySelect = createCategoryDropdown(bookmark)
+    const categorySelect = createCategoryDropdown(bookmark)
 
-        row.appendChild(title);
-        row.appendChild(link)
-        row.appendChild(categorySelect)   // <-- added, this was missing
-
-        container.appendChild(row);
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("bookmark-delete-btn");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => {
+        deleteBookmark(bookmark.bookmark_id, row);
     });
+
+    row.appendChild(title);
+    row.appendChild(link)
+    row.appendChild(categorySelect)
+    row.appendChild(deleteButton)
+
+    container.appendChild(row);
+});
 
 }
 async function createBookmark(bookmarkTitle, bookmarkUrl, categoryId){
@@ -224,10 +232,46 @@ function initCreateBookmarkForm(){
 });
 }
 
+async function deleteBookmark(bookmarkId, rowEl){
+    const token = localStorage.getItem("access_token");
+    const tokenType = localStorage.getItem("token_type") || "Bearer";
+
+    try{
+        const response = await fetch(`${API_BASE_URL}/user/delete_bookmark/${bookmarkId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `${tokenType} ${token}`,
+            },
+        });
+
+        if (!response.ok){
+            throw new Error(`Request failed: ${response.status}`);
+        }
+
+        rowEl.remove();
+    }catch(err){
+        console.log(err.message);
+    }
+}
+
+function signOut(){
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token_type");
+    window.location.href = "index.html";
+}
+
+function initSignOutButton(){
+    const button = document.querySelector("#signout-btn");
+    if (!button) return;
+
+    button.addEventListener("click", signOut);
+}
+
 async function init(){
 await getCategories();
 await getBookmarks();
 initCreateBookmarkForm();
+initSignOutButton();
 }
 
 init();

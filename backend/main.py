@@ -242,7 +242,7 @@ def create_user_category(
 
 
 # user/delete user category
-@app.delete("/user/delete_category/category_id")
+@app.delete("/user/delete_category/{category_id}")
 def delete_category(
     category_id: int,
     current_user=Depends(get_current_user),
@@ -263,7 +263,7 @@ def delete_category(
 
 
 # user/update user category
-@app.put("/users/update_category/{category_id}")
+@app.put("/user/update_category/{category_id}")
 def update_category(
     category_id: int,
     category: CategoryUpdate,

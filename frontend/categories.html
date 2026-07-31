@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark - Categories</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>Bookmark</h1>
+        <div class="nav-links">
+            <a href="bookmark.html">Bookmarks</a>
+            <a href="categories.html" class="active">Categories</a>
+        </div>
+        <button id="signout-btn">Sign Out</button>
+    </nav>
+
+    <section class="add-category-section">
+        <h3>Add Category</h3>
+        <form id="create-category-form">
+            <input id="new-category-name" type="text" placeholder="Category name" required>
+            <button type="submit">Add Category</button>
+        </form>
+    </section>
+
+    <div id="categories-container"></div>
+
+    <script type="module" src="categories.js"></script>
+</body>
+
+</html>
