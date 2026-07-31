@@ -137,9 +137,8 @@ bookmarks.forEach((bookmark) => {
     const row = document.createElement("div");
     row.classList.add("bookmark-row")
 
-    const title = document.createElement("span");
-    title.classList.add("bookmark-title")
-    title.textContent = bookmark.bookmark_title;
+    const info = document.createElement("div");
+    info.classList.add("bookmark-info");
 
     const link = document.createElement("a");
     link.classList.add("bookmark_url");
@@ -147,6 +146,13 @@ bookmarks.forEach((bookmark) => {
     link.textContent = bookmark.bookmark_title;
     link.target = "_blank";
     link.rel = "noopener noreferrer"
+
+    const urlText = document.createElement("span");
+    urlText.classList.add("bookmark-url-text");
+    urlText.textContent = bookmark.bookmark_url;
+
+    info.appendChild(link);
+    info.appendChild(urlText);
 
     const categorySelect = createCategoryDropdown(bookmark)
 
@@ -157,8 +163,7 @@ bookmarks.forEach((bookmark) => {
         deleteBookmark(bookmark.bookmark_id, row);
     });
 
-    row.appendChild(title);
-    row.appendChild(link)
+    row.appendChild(info)
     row.appendChild(categorySelect)
     row.appendChild(deleteButton)
 

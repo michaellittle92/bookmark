@@ -11,3 +11,5 @@ backend/.idea/vcs.xml
 backend/.idea/inspectionProfiles/profiles_settings.xml
 .gitignore
 backend/.idea/modules.xml
+frontend/notes.md
+DEPLOY.md

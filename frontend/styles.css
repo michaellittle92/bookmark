@@ -17,6 +17,11 @@ a {
     color: #2563eb;
 }
 
+button {
+    font-family: inherit;
+    font-size: 1rem;
+}
+
 /* Auth forms (index.html, registration.html) */
 
 .form-container {
@@ -196,12 +201,14 @@ a {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.bookmark-title {
-    display: none;
+.bookmark-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .bookmark_url {
-    flex: 1;
     text-decoration: none;
     font-weight: 500;
     overflow: hidden;
@@ -211,6 +218,14 @@ a {
 
 .bookmark_url:hover {
     text-decoration: underline;
+}
+
+.bookmark-url-text {
+    font-size: 0.8rem;
+    color: #52606d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .bookmark-category-select {
@@ -329,4 +344,62 @@ a {
 
 #create-category-form button:hover {
     background-color: #1d4ed8;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+    .navbar {
+        flex-wrap: wrap;
+        row-gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        order: 3;
+        width: 100%;
+        margin: 0;
+        justify-content: center;
+    }
+
+    .form-container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+    }
+
+    #create-bookmark-form {
+        flex-direction: column;
+    }
+
+    #create-bookmark-form input,
+    #create-bookmark-form select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #create-bookmark-form button {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #manage-categories-link {
+        display: none;
+    }
+
+    .bookmark-row,
+    .category-row {
+        flex-wrap: wrap;
+    }
+
+    .bookmark-info,
+    .category-name-input {
+        flex-basis: 100%;
+    }
+
+    .bookmark-category-select,
+    .bookmark-delete-btn,
+    .category-row button {
+        flex: 1;
+    }
 }
